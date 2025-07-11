@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalHost Manager - Never Forget What's Running on Which Port</title>
+    <meta name="description" content="Free Chrome & Edge extension that automatically detects and manages all your localhost services. See what's actually running on each port.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.5em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1.1em;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #2563eb;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: #2563eb;
+        }
+        
+        .demo-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .demo-container {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .demo-gif {
+            width: 100%;
+            border-radius: 8px;
+        }
+        
+        .features {
+            padding: 80px 0;
+            background: #f9fafb;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            color: #1f2937;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        
+        .feature-card p {
+            color: #6b7280;
+            line-height: 1.8;
+        }
+        
+        .examples {
+            padding: 80px 0;
+        }
+        
+        .examples h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            color: #1f2937;
+        }
+        
+        .example-list {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 40px;
+        }
+        
+        .example-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .port {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #2563eb;
+            margin-right: 20px;
+            font-family: monospace;
+            min-width: 100px;
+        }
+        
+        .service-name {
+            flex: 1;
+            font-size: 1.1em;
+            color: #1f2937;
+        }
+        
+        .status {
+            font-size: 1.5em;
+        }
+        
+        footer {
+            background: #1f2937;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer-links {
+            margin-top: 20px;
+        }
+        
+        .footer-links a {
+            color: #60a5fa;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .subtitle {
+                font-size: 1.2em;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 250px;
+                text-align: center;
+            }
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="badge">✨ 100% Free & Open Source</div>
+            <h1>LocalHost Manager</h1>
+            <p class="subtitle">Never forget what's running on which port again</p>
+            <div class="cta-buttons">
+                <a href="https://chrome.google.com/webstore" class="btn btn-primary">Add to Chrome</a>
+                <a href="https://microsoftedge.microsoft.com/addons" class="btn btn-secondary">Add to Edge</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="demo-section">
+        <div class="container">
+            <h2>See What's Actually Running</h2>
+            <p style="font-size: 1.2em; margin-bottom: 30px; color: #6b7280;">
+                Stop guessing. LocalHost Manager shows you exactly what's on each port - including error messages!
+            </p>
+            <div class="demo-container">
+                <!-- Replace with actual demo.gif -->
+                <img src="demo-placeholder.png" alt="LocalHost Manager Demo" class="demo-gif" 
+                     style="background: #e5e7eb; height: 400px; display: flex; align-items: center; justify-content: center;">
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Built for Developers, by Developers</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Auto-Detection</h3>
+                    <p>Automatically scans common development ports and identifies what's running - React, Vue, Django, Node.js, and more.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Real Content Display</h3>
+                    <p>Shows actual page titles and error messages. See "ProductPerfect AI" instead of just "Port 3000".</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🚦</div>
+                    <h3>Status Indicators</h3>
+                    <p>Instant visual feedback - green for running, red for errors. Know at a glance what needs attention.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Quick Actions</h3>
+                    <p>Open services with one click. Copy URLs instantly. Everything you need right at your fingertips.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌙</div>
+                    <h3>Dark Mode</h3>
+                    <p>Automatic theme switching based on your system preferences. Easy on the eyes during late-night coding.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Private</h3>
+                    <p>No data collection, no external requests, no tracking. Your localhost stays local.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="examples">
+        <div class="container">
+            <h2>Real-World Example</h2>
+            <div class="example-list">
+                <div class="example-item">
+                    <span class="port">:3000</span>
+                    <span class="service-name">ProductPerfect AI - Professional Product Photos</span>
+                    <span class="status">🟢</span>
+                </div>
+                
+                <div class="example-item">
+                    <span class="port">:8080</span>
+                    <span class="service-name">Error: ENOENT: no such file or directory</span>
+                    <span class="status">🔴</span>
+                </div>
+                
+                <div class="example-item">
+                    <span class="port">:5000</span>
+                    <span class="service-name">Flask API Server - v2.0.1</span>
+                    <span class="status">🟢</span>
+                </div>
+                
+                <div class="example-item">
+                    <span class="port">:27017</span>
+                    <span class="service-name">MongoDB</span>
+                    <span class="status">🟢</span>
+                </div>
+                
+                <div class="example-item">
+                    <span class="port">:4200</span>
+                    <span class="service-name">Angular Dev Server</span>
+                    <span class="status">🟢</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LocalHost Manager. Free and Open Source.</p>
+            <div class="footer-links">
+                <a href="https://github.com/yourusername/localhost-manager">GitHub</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="mailto:your@email.com">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

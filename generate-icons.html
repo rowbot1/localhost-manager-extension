@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Icon Generator</title>
+</head>
+<body>
+  <h2>LocalHost Manager Icons</h2>
+  <p>Right-click and save each icon to the icons folder:</p>
+  
+  <div style="display: flex; gap: 20px; align-items: center;">
+    <div>
+      <canvas id="icon16" width="16" height="16"></canvas>
+      <p>icon-16.png</p>
+    </div>
+    <div>
+      <canvas id="icon48" width="48" height="48"></canvas>
+      <p>icon-48.png</p>
+    </div>
+    <div>
+      <canvas id="icon128" width="128" height="128"></canvas>
+      <p>icon-128.png</p>
+    </div>
+  </div>
+  
+  <script>
+    function drawIcon(canvasId, size) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      
+      // Background
+      ctx.fillStyle = '#2563eb';
+      ctx.fillRect(0, 0, size, size);
+      
+      // Draw server/port icon
+      ctx.fillStyle = 'white';
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = size / 16;
+      
+      // Server stack
+      const barHeight = size / 8;
+      const barWidth = size * 0.6;
+      const startX = (size - barWidth) / 2;
+      const gap = size / 16;
+      
+      for (let i = 0; i < 3; i++) {
+        const y = size * 0.25 + i * (barHeight + gap);
+        ctx.fillRect(startX, y, barWidth, barHeight);
+        
+        // Port dots
+        ctx.fillStyle = '#2563eb';
+        ctx.beginPath();
+        ctx.arc(startX + barWidth - barHeight/2, y + barHeight/2, barHeight/4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'white';
+      }
+      
+      // Port number hint
+      if (size >= 48) {
+        ctx.font = `bold ${size/4}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText(':80', size/2, size * 0.85);
+      }
+    }
+    
+    drawIcon('icon16', 16);
+    drawIcon('icon48', 48);
+    drawIcon('icon128', 128);
+  </script>
+</body>
+</html>

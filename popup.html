@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalHost Manager</title>
+  <link rel="stylesheet" href="src/popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>LocalHost Manager</h1>
+      <div class="header-actions">
+        <button id="refreshBtn" class="icon-btn" title="Refresh">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+        </button>
+        <button id="settingsBtn" class="icon-btn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24M6.34 17.66l4.24-4.24m0 4.24l-4.24 4.24m7.9-20.48l4.24 4.24"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+    
+    <div id="loadingState" class="state-message">
+      <div class="spinner"></div>
+      <p>Scanning localhost ports...</p>
+    </div>
+    
+    <div id="emptyState" class="state-message" style="display: none;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="5" y="7" width="14" height="10" rx="2"/>
+        <path d="M8 3h8M8 3v4M16 3v4M10 11h4M10 14h4"/>
+      </svg>
+      <p>No services detected</p>
+      <small>Start your local development servers</small>
+    </div>
+    
+    <div id="servicesList" class="services-list" style="display: none;"></div>
+    
+    <div id="settingsPanel" class="settings-panel" style="display: none;">
+      <h2>Settings</h2>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="autoScanToggle" checked>
+          <span>Enable auto-scan</span>
+        </label>
+      </div>
+      
+      <div class="setting-group">
+        <label>Custom ports (comma-separated):</label>
+        <input type="text" id="customPortsInput" placeholder="e.g., 3010, 4567, 8090">
+      </div>
+      
+      <div class="setting-group">
+        <button id="saveSettingsBtn" class="primary-btn">Save Settings</button>
+        <button id="closeSettingsBtn" class="secondary-btn">Close</button>
+      </div>
+      
+      <div class="setting-group">
+        <h3>About</h3>
+        <p class="about-text">
+          LocalHost Manager v1.0.0<br>
+          Quickly access your local development services.
+        </p>
+      </div>
+    </div>
+    
+    <footer>
+      <small id="lastScanTime">Last scan: Never</small>
+    </footer>
+  </div>
+  
+  <script src="src/popup.js"></script>
+</body>
+</html>

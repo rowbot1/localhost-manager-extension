@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalHost Manager</title>
+  <link rel="stylesheet" href="src/popup-enhanced.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <h1>LocalHost Manager</h1>
+        <div class="header-actions">
+          <button id="commandPaletteBtn" class="icon-btn" title="Command Palette (⌘K)" data-tooltip="⌘K">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 9h6M9 12h6M9 15h4"/>
+            </svg>
+          </button>
+          <button id="refreshBtn" class="icon-btn" title="Refresh" data-tooltip="Refresh (R)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+            </svg>
+          </button>
+          <button id="themeBtn" class="icon-btn" title="Toggle Theme" data-tooltip="Theme (T)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24M6.34 17.66l4.24-4.24m0 4.24l-4.24 4.24m7.9-20.48l4.24 4.24"/>
+            </svg>
+          </button>
+          <button id="settingsBtn" class="icon-btn" title="Settings" data-tooltip="Settings (,)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24M6.34 17.66l4.24-4.24m0 4.24l-4.24 4.24m7.9-20.48l4.24 4.24"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="search-container">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search services... (/)">
+      </div>
+    </header>
+    
+    <div id="loadingState" class="state-message">
+      <div class="spinner"></div>
+      <p>Scanning localhost ports...</p>
+    </div>
+    
+    <div id="emptyState" class="state-message" style="display: none;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="5" y="7" width="14" height="10" rx="2"/>
+        <path d="M8 3h8M8 3v4M16 3v4M10 11h4M10 14h4"/>
+      </svg>
+      <p>No services detected</p>
+      <small>Start your local development servers</small>
+    </div>
+    
+    <div id="serviceGroups" class="service-groups" style="display: none;"></div>
+    
+    <!-- Quick Actions Bar -->
+    <div id="quickActions" class="quick-actions">
+      <button class="quick-action-btn" id="openAllBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+        </svg>
+        Open All
+      </button>
+      <button class="quick-action-btn" id="copyUrlsBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+        </svg>
+        Copy URLs
+      </button>
+    </div>
+    
+    <!-- Command Palette -->
+    <div id="commandPalette" class="command-palette">
+      <div class="command-box">
+        <input type="text" id="commandInput" class="command-input" placeholder="Type a command or search...">
+        <div id="commandResults" class="command-results"></div>
+      </div>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="settings-panel" style="display: none;">
+      <h2>Settings</h2>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="autoScanToggle" checked>
+          <span>Enable auto-scan</span>
+        </label>
+      </div>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="groupByTypeToggle" checked>
+          <span>Group services by type</span>
+        </label>
+      </div>
+      
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="notificationsToggle" checked>
+          <span>Show notifications</span>
+        </label>
+      </div>
+      
+      <div class="setting-group">
+        <label>Custom ports (comma-separated):</label>
+        <input type="text" id="customPortsInput" placeholder="e.g., 3010, 4567, 8090">
+      </div>
+      
+      <div class="setting-group">
+        <label>Service groups:</label>
+        <textarea id="serviceGroupsInput" placeholder='{"Frontend": ["React", "Vue", "Angular"], "Backend": ["Node.js", "Django"]}' rows="4"></textarea>
+      </div>
+      
+      <div class="setting-group">
+        <button id="saveSettingsBtn" class="primary-btn">Save Settings</button>
+        <button id="closeSettingsBtn" class="secondary-btn">Close</button>
+      </div>
+      
+      <div class="setting-group">
+        <h3>Keyboard Shortcuts</h3>
+        <div class="shortcuts-list">
+          <div class="shortcut-item">
+            <span>Toggle extension</span>
+            <span class="command-shortcut">⌘ Shift L</span>
+          </div>
+          <div class="shortcut-item">
+            <span>Command palette</span>
+            <span class="command-shortcut">⌘ K</span>
+          </div>
+          <div class="shortcut-item">
+            <span>Search</span>
+            <span class="command-shortcut">/</span>
+          </div>
+          <div class="shortcut-item">
+            <span>Refresh</span>
+            <span class="command-shortcut">R</span>
+          </div>
+          <div class="shortcut-item">
+            <span>Navigate</span>
+            <span class="command-shortcut">↑ ↓</span>
+          </div>
+          <div class="shortcut-item">
+            <span>Open service</span>
+            <span class="command-shortcut">Enter</span>
+          </div>
+          <div class="shortcut-item">
+            <span>Select multiple</span>
+            <span class="command-shortcut">⌘ Click</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="src/popup-enhanced.js"></script>
+</body>
+</html>
